@@ -1,0 +1,31 @@
+# 📖 Glossary (ELI5)
+
+- **Agentic AI**: A type of AI that can plan and act to achieve a goal without continuous human instructions. It follows a loop: perceive → reason → act → learn.
+- **Orchestrator**: The "boss" that decides which specialised helper (agent) should work on a task.
+- **RAG (Retrieval‑Augmented Generation)**: A technique where the model fetches relevant documents and then generates an answer using that context.
+- **LLM (Large Language Model)**: A powerful model trained on lots of text that can understand and generate human‑like language.
+- **LLM Provider**: The service or software that runs the LLM. This system supports three providers — OpenAI (cloud), Ollama (local), and GPTec (custom endpoint) — all switchable via a single environment variable.
+- **LLM Factory**: A single piece of code (`src/llm.py`) that all agents use to get their LLM. Changing the provider in `.env` automatically applies to every agent with no code changes.
+- **OpenAI**: A cloud AI service that provides models like `gpt-4o-mini`. Requires an API key and internet access.
+- **Ollama**: A tool that lets you run LLMs locally on your own machine. No API key or internet needed. Good for privacy-sensitive or offline deployments.
+- **GPTec**: Any OpenAI-compatible API endpoint — including private, on-premise, or third-party hosted models. Configured with a custom URL, key, and model name.
+- **LangChain**: A framework for building applications using LLMs and tool chains.
+- **LangGraph**: A library that enables building workflows with multiple agents (nodes) connected as a graph.
+- **Identity Verification**: Regulatory process where businesses verify customers' identities and risk profiles. Primary terminology in the system.
+- **KYC (Know Your Customer)**: Legacy term for identity verification. Still supported as an alias for backwards compatibility.
+- **Identity Status**: Primary field indicating verification state: `verified`, `unverified`, or `pending`. Replaces `kyc_status`.
+- **Fraud Score**: Primary risk field (0.0–1.0) indicating fraud likelihood. Higher scores mean higher risk.
+- **Risk Score**: Alias for `fraud_score` used by SQL analytics layer for backwards compatibility.
+- **Lifetime Value**: Total customer spend since account creation. Used in lead scoring instead of current account balance.
+- **Purchase Categories**: Product categories a customer has bought (e.g. `electronics`, `clothing`, `home`). Used for upsell and cross-sell recommendations.
+- **Upsell Recommendations**: Algorithm that suggests higher-tier or complementary products based on current purchase categories.
+- **User-Based Recommendations**: Algorithm that recommends products based on what segment peers buy, weighted by engagement similarity.
+- **Collaborative Filtering**: Cross-customer recommendation algorithm using Jaccard similarity (70%) + engagement proximity (30%).
+- **Sentiment Score**: A numeric measure (e.g. from ‑1 to 1) indicating how positive or negative a customer's feedback is.
+- **Segment**: A group of customers with similar behaviours or characteristics. Labels used: `vip`, `casual`, `dormant_vip`, `at_risk`, `new`.
+- **Agent Registry**: A catalogue of all available agents with their capabilities, tools, and autonomy levels. Used by the orchestrator to make routing decisions.
+- **Observability**: The ability to monitor what the system is doing in real time — which agent ran, how long it took, and whether it succeeded.
+- **NBA (Next-Best-Action)**: A scoring algorithm that ranks available promotions for a customer using segment match (35%), cross-sell trigger (25%), engagement (25%), and return-risk reliability (15%).
+- **Return Risk**: A 0.0–1.0 model score predicting the likelihood a customer will return a product or initiate a chargeback. Used by Level-3 to identify intervention candidates.
+- **Identity Gate**: A Level-3 guard that blocks promotional actions when a customer's `identity_status` is `unverified` or `expired`, and automatically opens an identity re-verification case.
+- **Promotion Eligibility**: The list of promotion codes a customer qualifies for, stored on the customer record and used by `recommend_offer()` and `score_leads()`.

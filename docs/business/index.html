@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic AI - Use Cases Index</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        .levels-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .level-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .level-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .level-header {
+            padding: 25px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .level-1 .level-header { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .level-2 .level-header { background: linear-gradient(135deg, #10b981, #059669); }
+        .level-3 .level-header { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .level-4 .level-header { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .level-5 .level-header { background: linear-gradient(135deg, #ec4899, #db2777); }
+        
+        .level-emoji {
+            font-size: 1.5em;
+        }
+        
+        .level-content {
+            padding: 25px;
+        }
+        
+        .level-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+        
+        .level-description {
+            color: #6b7280;
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .use-cases-list {
+            list-style: none;
+            margin-bottom: 15px;
+        }
+        
+        .use-cases-list li {
+            padding: 8px 0;
+            color: #4b5563;
+            font-size: 0.9em;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .use-cases-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .use-cases-list li:before {
+            content: "✓ ";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .level-footer {
+            padding: 15px 25px;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85em;
+        }
+        
+        .notebook-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .notebook-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        .doc-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .doc-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .features-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .features-section h2 {
+            color: #1f2937;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .feature-item {
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .feature-item h3 {
+            color: #1f2937;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+        
+        .feature-item p {
+            color: #6b7280;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .summary-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .summary-section h2 {
+            color: #1f2937;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th {
+            background: #f3f4f6;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #1f2937;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #6b7280;
+        }
+        
+        tr:hover {
+            background: #f9fafb;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 50px;
+            padding: 20px;
+            opacity: 0.9;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            .levels-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧩 Agentic AI System</h1>
+            <p>Multi-Level Agent Architecture for Business Automation</p>
+        </header>
+        
+        <div class="levels-grid">
+            <!-- Level 1 -->
+            <div class="level-card level-1">
+                <div class="level-header">
+                    <span class="level-emoji">🔍</span>
+                    <span>Level 1: Knowledge & Retrieval</span>
+                </div>
+                <div class="level-content">
+                    <div class="level-title">Information Retrieval Layer</div>
+                    <div class="level-description">
+                        Answers questions about customers, policies, and history by searching across databases, emails, notes, and documents.
+                    </div>
+                    <ul class="use-cases-list">
+                        <li>Customer Profile Lookup</li>
+                        <li>Identity Verification Status</li>
+                        <li>Email Correspondence Search</li>
+                        <li>CRM Agent Notes Search</li>
+                        <li>Policy Document Search (RAG)</li>
+                        <li>Cross-Source Search</li>
+                        <li>Audit Trail Logging</li>
+                        <li>Output Guardrails</li>
+                    </ul>
+                </div>
+                <div class="level-footer">
+                    <span class="status">✅ Production Ready</span>
+                    <div>
+                        <a href="../notebooks/level1_knowledge_agent.ipynb" class="notebook-link">Notebook</a> |
+                        <a href="level1-knowledge.md" class="doc-link">Docs</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Level 2 -->
+            <div class="level-card level-2">
+                <div class="level-header">
+                    <span class="level-emoji">📊</span>
+                    <span>Level 2: Analytics & Insights</span>
+                </div>
+                <div class="level-content">
+                    <div class="level-title">Data Science Co-Pilot</div>
+                    <div class="level-description">
+                        Transforms natural language into actionable insights using SQL, ML, and NLP.
+                    </div>
+                    <ul class="use-cases-list">
+                        <li>K-means Customer Segmentation</li>
+                        <li>SQL Analytics & Queries</li>
+                        <li>Fraud Risk Analysis</li>
+                        <li>Sentiment Analysis</li>
+                        <li>Text Summarization</li>
+                        <li>Customer 360 View</li>
+                        <li>Sales Analytics</li>
+                        <li>Support Analytics</li>
+                    </ul>
+                </div>
+                <div class="level-footer">
+                    <span class="status">✅ Production Ready</span>
+                    <div>
+                        <a href="../notebooks/level2_analytics_agent.ipynb" class="notebook-link">Notebook</a> |
+                        <a href="level2-analytics.md" class="doc-link">Docs</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Level 3 -->
+            <div class="level-card level-3">
+                <div class="level-header">
+                    <span class="level-emoji">⚙️</span>
+                    <span>Level 3: Functional Execution</span>
+                </div>
+                <div class="level-content">
+                    <div class="level-title">Lead Generation & Marketing</div>
+                    <div class="level-description">
+                        Executes business actions: lead scoring, enrichment, recommendations, notifications, and campaigns.
+                    </div>
+                    <ul class="use-cases-list">
+                        <li>Lead Scoring</li>
+                        <li>Customer Enrichment</li>
+                        <li>Next-Best-Action (NBA)</li>
+                        <li>Upsell Recommendations</li>
+                        <li>User-Based Recommendations</li>
+                        <li>Collaborative Filtering</li>
+                        <li>Consent-Gated Notifications</li>
+                        <li>Identity-Gated Actions</li>
+                    </ul>
+                </div>
+                <div class="level-footer">
+                    <span class="status">✅ Production Ready</span>
+                    <div>
+                        <a href="../notebooks/level3_functional_agent.ipynb" class="notebook-link">Notebook</a> |
+                        <a href="level3-functional.md" class="doc-link">Docs</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Level 4 -->
+            <div class="level-card level-4">
+                <div class="level-header">
+                    <span class="level-emoji">🎯</span>
+                    <span>Level 4: Strategic Orchestration</span>
+                </div>
+                <div class="level-content">
+                    <div class="level-title">Workflow Orchestration</div>
+                    <div class="level-description">
+                        Plans campaigns to achieve business outcomes and self-corrects when KPIs deviate.
+                    </div>
+                    <ul class="use-cases-list">
+                        <li>Campaign Planning & Decomposition</li>
+                        <li>Multi-Agent Orchestration</li>
+                        <li>Revenue Impact Analysis</li>
+                        <li>Scenario Simulation</li>
+                        <li>Pilot Testing (A/B)</li>
+                        <li>Roadmap Prioritization</li>
+                        <li>Self-Reflection Loop</li>
+                        <li>Governance Dashboard</li>
+                    </ul>
+                </div>
+                <div class="level-footer">
+                    <span class="status">✅ Production Ready</span>
+                    <div>
+                        <a href="../notebooks/level4_strategic_agent.ipynb" class="notebook-link">Notebook</a> |
+                        <a href="level4-strategic.md" class="doc-link">Docs</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Level 5 -->
+            <div class="level-card level-5">
+                <div class="level-header">
+                    <span class="level-emoji">🎁</span>
+                    <span>Level 5: Recommendation Intelligence</span>
+                </div>
+                <div class="level-content">
+                    <div class="level-title">Personalized Recommendations</div>
+                    <div class="level-description">
+                        Generates personalized product suggestions using collaborative filtering and behavior signals.
+                    </div>
+                    <ul class="use-cases-list">
+                        <li>User-Based Recommendations</li>
+                        <li>Collaborative Filtering</li>
+                        <li>Behaviour-Based Ranking</li>
+                        <li>Hybrid Recommender</li>
+                        <li>Cold Start Handling</li>
+                        <li>Cross-User Segment Recs</li>
+                        <li>Offline Evaluation</li>
+                        <li>Orchestrator Routing</li>
+                    </ul>
+                </div>
+                <div class="level-footer">
+                    <span class="status">✅ Production Ready</span>
+                    <div>
+                        <a href="../notebooks/level5_recommendation_agent.ipynb" class="notebook-link">Notebook</a> |
+                        <a href="level5-recommendation.md" class="doc-link">Docs</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Features Section -->
+        <div class="features-section">
+            <h2>🚀 Key Capabilities</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h3>🔐 Security & Compliance</h3>
+                    <p>Automatic PII redaction, immutable audit trails, consent validation, identity verification gating, and 7-year retention.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🤖 Multi-Agent Orchestration</h3>
+                    <p>Seamless coordination across all 5 levels. Level 4 decomposes goals and calls Levels 2, 3, and 5 as needed.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>📊 Data Integration</h3>
+                    <p>Unified access to customer DB, emails, CRM notes, policies, sales, social media, and support tickets.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🎯 Business Outcomes</h3>
+                    <p>ROI projection, scenario simulation, A/B testing, KPI tracking, and self-correcting strategies.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>🧠 AI/ML Stack</h3>
+                    <p>LLMs (Claude), vector search (ChromaDB), clustering (scikit-learn), NLP (RoBERTa, BART), and collaborative filtering.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>📈 Observability</h3>
+                    <p>Langfuse integration for tracing, monitoring, and debugging. Full audit trail for compliance.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Summary Table -->
+        <div class="summary-section">
+            <h2>📋 Use Case Summary</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Level</th>
+                        <th>Agent Type</th>
+                        <th>Primary Use Cases</th>
+                        <th>Key Technology</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Level 1</strong></td>
+                        <td>Knowledge Retrieval</td>
+                        <td>Customer lookup, email search, policy Q&A, audit trail</td>
+                        <td>Vector search, RAG, SQL</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Level 2</strong></td>
+                        <td>Analytics & Insights</td>
+                        <td>Segmentation, SQL analytics, sentiment analysis, Customer 360</td>
+                        <td>K-means, SQL, NLP, matplotlib</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Level 3</strong></td>
+                        <td>Functional Execution</td>
+                        <td>Lead scoring, enrichment, NBA, notifications, campaigns</td>
+                        <td>Rule-based, collaborative filtering, consent gating</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Level 4</strong></td>
+                        <td>Strategic Orchestration</td>
+                        <td>Campaign planning, ROI projection, scenario simulation, self-correction</td>
+                        <td>LLM decomposition, multi-agent coordination, KPI tracking</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Level 5</strong></td>
+                        <td>Recommendation Intelligence</td>
+                        <td>Personalized recommendations, cold start, offline evaluation</td>
+                        <td>Collaborative filtering, behavior scoring, hybrid ranking</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Agentic AI System</strong> — Multi-Level Agent Architecture for Business Automation</p>
+            <p>📚 <a href="overview.md" style="color: white; text-decoration: underline;">Business Overview</a> | 
+               📖 <a href="roi-and-operating-model.md" style="color: white; text-decoration: underline;">ROI & Operating Model</a></p>
+            <p>Last Updated: 2026-03-12 | Version: 1.0 | Status: Production Ready</p>
+        </div>
+    </div>
+</body>
+</html>
