@@ -1,6 +1,6 @@
 import pytest
-from src.core.state import new_state
-from src.orchestration.orchestrator import orchestrator_node, route
+from nonagentic.core.state import new_state
+from nonagentic.orchestration.orchestrator import orchestrator_node, route
 
 
 def _run(request: str) -> dict:

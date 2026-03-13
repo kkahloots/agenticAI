@@ -13,14 +13,16 @@ import sys
 import os
 
 from dotenv import load_dotenv
+
 load_dotenv()
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 
-from src.tools.loader import load_file
-from src.tools.knowledge import ingest_documents
+from nonagentic.tools.loader import load_file
+from nonagentic.tools.knowledge import ingest_documents
 
-MANIFEST_PATH = pathlib.Path("data/ingested.json")
+_PROJECT_ROOT = pathlib.Path(__file__).parent.parent
+MANIFEST_PATH = _PROJECT_ROOT / "data" / "ingested.json"
 SUPPORTED_EXTS = {".txt", ".md", ".pdf", ".docx", ".eml"}
 
 
@@ -61,13 +63,17 @@ def ingest_folder(folder: str, reset: bool = False) -> None:
         print(f"  ingested {len(chunks):>3} chunk(s): {path.relative_to(root.parent)}")
 
     save_manifest(manifest)
-    print(f"\nDone. {len(new_files)} files → {total_chunks} chunks ingested into ChromaDB.")
+    print(
+        f"\nDone. {len(new_files)} files → {total_chunks} chunks ingested into ChromaDB."
+    )
     print(f"Manifest updated: {MANIFEST_PATH}")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--folder", default="data/docs", help="Root folder to scan")
-    parser.add_argument("--reset", action="store_true", help="Re-ingest all files, ignoring manifest")
+    parser.add_argument("--folder", default=str(_PROJECT_ROOT / "data" / "docs"), help="Root folder to scan")
+    parser.add_argument(
+        "--reset", action="store_true", help="Re-ingest all files, ignoring manifest"
+    )
     args = parser.parse_args()
     ingest_folder(args.folder, reset=args.reset)

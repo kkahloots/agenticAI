@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import patch
-from src.agents.level5 import level5_node
-from src.core.state import new_state
-from src.tools.strategic import (
+from nonagentic.AI.level5 import level5_node
+from nonagentic.core.state import new_state
+from nonagentic.tools.strategic import (
     simulate_revenue_impact,
     run_scenario_simulation,
     run_pilot_test,
@@ -44,8 +44,22 @@ def test_simulate_revenue_impact_zero_cost():
 
 def test_run_scenario_simulation():
     scenarios = [
-        {"name": "A", "segment_size": 100, "conversion_rate": 0.1, "avg_order_value": 50, "risk": "low", "campaign_cost": 100},
-        {"name": "B", "segment_size": 200, "conversion_rate": 0.05, "avg_order_value": 100, "risk": "high", "campaign_cost": 200},
+        {
+            "name": "A",
+            "segment_size": 100,
+            "conversion_rate": 0.1,
+            "avg_order_value": 50,
+            "risk": "low",
+            "campaign_cost": 100,
+        },
+        {
+            "name": "B",
+            "segment_size": 200,
+            "conversion_rate": 0.05,
+            "avg_order_value": 100,
+            "risk": "high",
+            "campaign_cost": 200,
+        },
     ]
     results = run_scenario_simulation("test goal", scenarios)
     assert len(results) == 2
