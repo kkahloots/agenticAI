@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from src.tools.analytics import run_sql_query, generate_segment, _is_safe, _avg
-from src.tools.leads import (
+from nonagentic.tools.analytics import run_sql_query, generate_segment, _is_safe, _avg
+from nonagentic.tools.leads import (
     score_leads,
     enrich_customer,
     upsell_recommend,
@@ -14,6 +14,7 @@ from src.tools.leads import (
 
 
 # ── Analytics Tests ──
+
 
 def test_is_safe_query():
     assert _is_safe("SELECT * FROM customers") is True
@@ -55,8 +56,10 @@ def test_avg_helper():
 
 # ── Leads Tests ──
 
+
 def test_recency_factor():
     from datetime import date, timedelta
+
     recent = (date.today() - timedelta(days=15)).isoformat()
     assert _recency_factor(recent) > 0.5
     assert _recency_factor(None) == 0.3
@@ -88,7 +91,12 @@ def test_enrich_customer_not_found():
 def test_enrich_customer_found():
     with patch("src.tools.leads._load_lead_scores") as mock_load:
         mock_load.return_value = [
-            {"customer_id": "CUST-001", "full_name": "Test User", "segment": "vip", "enrichment": {"credit_score": 750}}
+            {
+                "customer_id": "CUST-001",
+                "full_name": "Test User",
+                "segment": "vip",
+                "enrichment": {"credit_score": 750},
+            }
         ]
         result = enrich_customer("CUST-001")
         assert result["customer_id"] == "CUST-001"
@@ -164,7 +172,7 @@ def test_collaborative_recommend_found():
                 "purchase_categories": ["electronics", "home"],
                 "engagement_score": 0.75,
                 "lifetime_value": 25000,
-            }
+            },
         ]
         result = collaborative_recommend("CUST-001", top_n=3)
         assert result["customer_id"] == "CUST-001"
@@ -172,8 +180,9 @@ def test_collaborative_recommend_found():
 
 
 def test_bulk_recommend():
-    with patch("src.tools.leads.score_leads") as mock_score, \
-         patch("src.tools.leads._load_customers") as mock_load:
+    with patch("src.tools.leads.score_leads") as mock_score, patch(
+        "src.tools.leads._load_customers"
+    ) as mock_load:
         mock_score.return_value = {
             "prospects": [
                 {"customer_id": "CUST-001", "lead_score": 0.9},
@@ -190,7 +199,7 @@ def test_bulk_recommend():
                 "customer_id": "CUST-002",
                 "consent_flags": {"sms": True, "marketing": True},
                 "fraud_score": 0.2,
-            }
+            },
         ]
         result = bulk_recommend("PROMO-PREMIUM-MEMBERSHIP", top_n=10)
         assert "execution_plan" in result

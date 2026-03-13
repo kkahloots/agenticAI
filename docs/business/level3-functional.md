@@ -328,7 +328,7 @@ Variables available:
 ### Lead Scoring
 
 ```python
-from src.tools.leads import score_leads
+from nonagentic.tools.leads import score_leads
 
 scores = score_leads(customer_ids=["CUST-001", "CUST-002"])
 # Returns: [{customer_id, score, factors, rank}, ...]
@@ -337,7 +337,7 @@ scores = score_leads(customer_ids=["CUST-001", "CUST-002"])
 ### Customer Enrichment
 
 ```python
-from src.tools.customer import enrich_customer
+from nonagentic.tools.customer import enrich_customer
 
 enriched = enrich_customer("CUST-001")
 # Returns: {credit_score, business_type, location, risk_level}
@@ -346,7 +346,7 @@ enriched = enrich_customer("CUST-001")
 ### Next-Best-Action
 
 ```python
-from src.tools.functional import get_next_best_action
+from nonagentic.tools.functional import get_next_best_action
 
 nba = get_next_best_action("CUST-001")
 # Returns: {product_id, offer_value, confidence, reasoning}
@@ -355,7 +355,7 @@ nba = get_next_best_action("CUST-001")
 ### Recommendations
 
 ```python
-from src.tools.recommender import (
+from nonagentic.tools.recommender import (
     get_upsell_recommendations,
     get_user_based_recommendations,
     get_collaborative_recommendations
@@ -369,7 +369,7 @@ collab = get_collaborative_recommendations("CUST-001", top_k=5)
 ### Notifications
 
 ```python
-from src.tools.functional import send_notification
+from nonagentic.tools.functional import send_notification
 
 result = send_notification(
     customer_id="CUST-001",
@@ -383,7 +383,7 @@ result = send_notification(
 ### Identity Gating
 
 ```python
-from src.tools.functional import check_identity_gate
+from nonagentic.tools.functional import check_identity_gate
 
 gate = check_identity_gate("CUST-001")
 # Returns: {passed, status, expiry_date, days_remaining}
@@ -392,7 +392,7 @@ gate = check_identity_gate("CUST-001")
 ### Campaign Execution
 
 ```python
-from src.tools.functional import execute_campaign
+from nonagentic.tools.functional import execute_campaign
 
 campaign = execute_campaign(
     segment="high_value",
@@ -406,7 +406,7 @@ campaign = execute_campaign(
 ### Payment Risk Intervention
 
 ```python
-from src.tools.functional import identify_payment_risk
+from nonagentic.tools.functional import identify_payment_risk
 
 at_risk = identify_payment_risk()
 # Returns: [{customer_id, risk_score, days_overdue, recommended_action}, ...]

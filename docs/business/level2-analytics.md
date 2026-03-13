@@ -61,7 +61,7 @@ python test_level2.py
 
 **Example**:
 ```python
-from src.tools.analytics import generate_segment
+from nonagentic.tools.analytics import generate_segment
 
 segments = generate_segment(algorithm='kmeans', n_clusters=4)
 # Returns: 4 clusters with avg risk/engagement scores
@@ -82,7 +82,7 @@ segments = generate_segment(algorithm='kmeans', n_clusters=4)
 
 **Example**:
 ```python
-from src.tools.analytics import run_sql_query
+from nonagentic.tools.analytics import run_sql_query
 
 sql = "SELECT segment, AVG(account_balance) FROM customers GROUP BY segment"
 result = run_sql_query(sql)
@@ -105,7 +105,7 @@ result = run_sql_query(sql)
 
 **Example**:
 ```python
-from src.tools.nlp import analyze_sentiment
+from nonagentic.tools.nlp import analyze_sentiment
 
 result = analyze_sentiment("Great banking app!")
 # Returns: {sentiment: 'positive', confidence: 0.95, scores: {...}}
@@ -128,7 +128,7 @@ result = analyze_sentiment("Great banking app!")
 
 **Example**:
 ```python
-from src.tools.nlp import summarize_text
+from nonagentic.tools.nlp import summarize_text
 
 result = summarize_text(long_text, max_length=130)
 # Returns: {summary: "...", compression_ratio: 0.3}
@@ -151,7 +151,7 @@ result = summarize_text(long_text, max_length=130)
 
 **Example**:
 ```python
-from src.tools.customer360 import get_customer_360
+from nonagentic.tools.customer360 import get_customer_360
 
 customer = get_customer_360("CUST-001")
 # Returns: {customer_profile, sales, social, support, summary}
@@ -176,7 +176,7 @@ customer = get_customer_360("CUST-001")
 
 **Example**:
 ```python
-from src.tools.customer360 import get_sales_analytics
+from nonagentic.tools.customer360 import get_sales_analytics
 
 analytics = get_sales_analytics()
 # Returns: {total_revenue, by_product, by_channel, top_product}
@@ -196,7 +196,7 @@ analytics = get_sales_analytics()
 
 **Example**:
 ```python
-from src.tools.customer360 import get_support_analytics
+from nonagentic.tools.customer360 import get_support_analytics
 
 analytics = get_support_analytics()
 # Returns: {total_tickets, by_type, by_status, avg_resolution_hours}
@@ -216,7 +216,7 @@ analytics = get_support_analytics()
 
 **Example**:
 ```python
-from src.tools.visualisation import visualise
+from nonagentic.tools.visualisation import visualise
 
 chart_path = visualise(segments, chart_type="bar", title="Customer Segments")
 # Saves to: data/charts/{request_id}.png
@@ -374,7 +374,7 @@ pip install scikit-learn
 ### Analytics Module
 
 ```python
-from src.tools.analytics import run_sql_query, generate_segment
+from nonagentic.tools.analytics import run_sql_query, generate_segment
 
 # SQL query
 result = run_sql_query(sql, params=None, max_rows=10000)
@@ -386,7 +386,7 @@ segments = generate_segment(filters=None, algorithm='kmeans', n_clusters=3)
 ### NLP Module
 
 ```python
-from src.tools.nlp import analyze_sentiment, summarize_text
+from nonagentic.tools.nlp import analyze_sentiment, summarize_text
 
 # Sentiment
 result = analyze_sentiment(text)
@@ -398,7 +398,7 @@ summary = summarize_text(text, max_length=130, min_length=30)
 ### Customer 360 Module
 
 ```python
-from src.tools.customer360 import (
+from nonagentic.tools.customer360 import (
     get_customer_360,
     get_sales_analytics,
     get_sentiment_analytics,

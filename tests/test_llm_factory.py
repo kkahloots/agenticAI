@@ -6,13 +6,15 @@ from unittest.mock import patch, MagicMock
 def _reload_llm():
     """Force reload of src.core.llm so env var changes take effect."""
     import importlib
-    import src.core.llm as mod
+    import nonagentic.core.llm as mod
+
     mod.get_llm.cache_clear()
     importlib.reload(mod)
     return mod
 
 
 # ── provider selection ────────────────────────────────────────────────────────
+
 
 def test_default_provider_is_openai(monkeypatch):
     monkeypatch.delenv("LLM_PROVIDER", raising=False)
@@ -55,6 +57,7 @@ def test_gptec_provider_selected(monkeypatch):
 
 # ── gptec missing env vars ────────────────────────────────────────────────────
 
+
 def test_gptec_raises_without_required_vars(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "gptec")
     monkeypatch.delenv("GPTEC_API_URL", raising=False)
@@ -67,6 +70,7 @@ def test_gptec_raises_without_required_vars(monkeypatch):
 
 # ── get_llm returns BaseChatModel ─────────────────────────────────────────────
 
+
 @pytest.mark.real_llm_factory
 def test_get_llm_openai_returns_chat_model(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "openai")
@@ -75,6 +79,7 @@ def test_get_llm_openai_returns_chat_model(monkeypatch):
     mod = _reload_llm()
     llm = mod.get_llm(temperature=0.0)
     from langchain_core.language_models.chat_models import BaseChatModel
+
     assert isinstance(llm, BaseChatModel)
 
 
@@ -88,10 +93,12 @@ def test_get_llm_ollama_falls_back_to_openai_shim(monkeypatch):
         mod = _reload_llm()
         llm = mod.get_llm(temperature=0.0)
         from langchain_core.language_models.chat_models import BaseChatModel
+
         assert isinstance(llm, BaseChatModel)
 
 
 # ── caching ───────────────────────────────────────────────────────────────────
+
 
 @pytest.mark.real_llm_factory
 def test_get_llm_same_temperature_returns_cached(monkeypatch):

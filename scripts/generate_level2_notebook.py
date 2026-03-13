@@ -3,16 +3,13 @@
 
 import json
 
+
 def md_cell(text, cell_id):
     """Create a markdown cell."""
     lines = text.split("\n")
     source = [line + "\n" for line in lines[:-1]] + [lines[-1]] if lines else []
-    return {
-        "cell_type": "markdown",
-        "id": cell_id,
-        "metadata": {},
-        "source": source
-    }
+    return {"cell_type": "markdown", "id": cell_id, "metadata": {}, "source": source}
+
 
 def code_cell(code, cell_id):
     """Create a code cell."""
@@ -24,8 +21,9 @@ def code_cell(code, cell_id):
         "id": cell_id,
         "metadata": {},
         "outputs": [],
-        "source": source
+        "source": source,
     }
+
 
 # Notebook structure
 notebook = {
@@ -34,7 +32,7 @@ notebook = {
         "kernelspec": {
             "display_name": "venv (3.13.12)",
             "language": "python",
-            "name": "python3"
+            "name": "python3",
         },
         "language_info": {
             "codemirror_mode": {"name": "ipython", "version": 3},
@@ -43,15 +41,17 @@ notebook = {
             "name": "python",
             "nbconvert_exporter": "python",
             "pygments_lexer": "ipython3",
-            "version": "3.13.12"
-        }
+            "version": "3.13.12",
+        },
     },
     "nbformat": 4,
-    "nbformat_minor": 5
+    "nbformat_minor": 5,
 }
 
 # Title
-notebook["cells"].append(md_cell("""# Level 2 — Analytics & Pattern Discovery Agent
+notebook["cells"].append(
+    md_cell(
+        """# Level 2 — Analytics & Pattern Discovery Agent
 ### Business Analytics Demo
 
 ---
@@ -98,14 +98,24 @@ Returns insights + charts
 
 Every query is logged to the audit trail with full traceability.
 
----""", "title"))
+---""",
+        "title",
+    )
+)
 
 # Setup
-notebook["cells"].append(md_cell("""## Setup
+notebook["cells"].append(
+    md_cell(
+        """## Setup
 
-Run this cell once to initialize the system.""", "setup-header"))
+Run this cell once to initialize the system.""",
+        "setup-header",
+    )
+)
 
-notebook["cells"].append(code_cell("""import sys, os
+notebook["cells"].append(
+    code_cell(
+        """import sys, os
 from pathlib import Path
 
 # Resolve project root
@@ -126,26 +136,36 @@ from IPython.display import display, HTML, Markdown, Image
 import json
 
 # Import Level 2 tools
-from src.tools.analytics import run_sql_query, generate_segment
-from src.tools.customer360 import get_customer_360, get_sales_analytics, get_sentiment_analytics, get_support_analytics
-from src.tools.nlp import analyze_sentiment, summarize_text, analyze_batch_sentiment
-from src.tools.visualisation import visualise
+from nonagentic.tools.analytics import run_sql_query, generate_segment
+from nonagentic.tools.customer360 import get_customer_360, get_sales_analytics, get_sentiment_analytics, get_support_analytics
+from nonagentic.tools.nlp import analyze_sentiment, summarize_text, analyze_batch_sentiment
+from nonagentic.tools.visualisation import visualise
 
 # Import display helpers
 from utils.display_helpers import display_card, display_metrics, display_bar_chart
 
 print("✅ Level 2 Analytics Agent Ready")
-print(f"📁 Project root: {_root}")""", "setup"))
+print(f"📁 Project root: {_root}")""",
+        "setup",
+    )
+)
 
 # Use Case 1: Customer Segmentation
-notebook["cells"].append(md_cell("""---
+notebook["cells"].append(
+    md_cell(
+        """---
 ## Use Case 1 — Customer Segmentation (K-means Clustering)
 
 **Business scenario**: The marketing team wants to identify distinct customer groups based on risk and engagement scores to tailor campaigns.
 
-The agent uses **K-means clustering** to automatically discover customer segments. No manual rules needed — the algorithm finds natural groupings in the data.""", "uc1-header"))
+The agent uses **K-means clustering** to automatically discover customer segments. No manual rules needed — the algorithm finds natural groupings in the data.""",
+        "uc1-header",
+    )
+)
 
-notebook["cells"].append(code_cell("""# Perform K-means segmentation
+notebook["cells"].append(
+    code_cell(
+        """# Perform K-means segmentation
 result = generate_segment(algorithm="kmeans", n_clusters=4)
 
 segments = result.get("segments", [])
@@ -182,17 +202,27 @@ display_card("Business Insights",
     f"Identified {len(segments)} distinct customer segments. "
     f"Largest segment: {max(segments, key=lambda x: x['size'])['label']} with {max(segments, key=lambda x: x['size'])['size']} customers. "
     "Use these segments for targeted marketing campaigns.",
-    emoji="💡", color="#10b981")""", "uc1-code"))
+    emoji="💡", color="#10b981")""",
+        "uc1-code",
+    )
+)
 
 # Use Case 2: SQL Analytics
-notebook["cells"].append(md_cell("""---
+notebook["cells"].append(
+    md_cell(
+        """---
 ## Use Case 2 — SQL Analytics (Top Customers by Balance)
 
 **Business scenario**: The relationship manager needs to identify top customers by account balance for VIP treatment.
 
-The agent generates and executes SQL queries automatically from natural language.""", "uc2-header"))
+The agent generates and executes SQL queries automatically from natural language.""",
+        "uc2-header",
+    )
+)
 
-notebook["cells"].append(code_cell("""# Query top customers by balance
+notebook["cells"].append(
+    code_cell(
+        """# Query top customers by balance
 sql = \"\"\"
 SELECT customer_id, full_name, segment, account_balance, risk_score, engagement_score
 FROM customers
@@ -230,17 +260,27 @@ if "rows" in result and result["rows"]:
         "Customers": len(result["rows"])
     })
 else:
-    display_card("Error", "No data returned", emoji="❌", color="#ef4444")""", "uc2-code"))
+    display_card("Error", "No data returned", emoji="❌", color="#ef4444")""",
+        "uc2-code",
+    )
+)
 
 # Use Case 3: Risk Analysis
-notebook["cells"].append(md_cell("""---
+notebook["cells"].append(
+    md_cell(
+        """---
 ## Use Case 3 — Risk Analysis (High-Risk Customers)
 
 **Business scenario**: Compliance needs to identify high-risk customers for enhanced due diligence.
 
-The agent filters customers by risk score and analyzes their characteristics.""", "uc3-header"))
+The agent filters customers by risk score and analyzes their characteristics.""",
+        "uc3-header",
+    )
+)
 
-notebook["cells"].append(code_cell("""# Query high-risk customers
+notebook["cells"].append(
+    code_cell(
+        """# Query high-risk customers
 sql = \"\"\"
 SELECT segment, COUNT(*) as count, AVG(risk_score) as avg_risk, AVG(engagement_score) as avg_engagement
 FROM customers
@@ -275,17 +315,27 @@ if "rows" in result and result["rows"]:
         "Recommend enhanced monitoring and KYC verification.",
         emoji="🚨", color="#ef4444")
 else:
-    display_card("Info", "No high-risk customers found", emoji="✅", color="#10b981")""", "uc3-code"))
+    display_card("Info", "No high-risk customers found", emoji="✅", color="#10b981")""",
+        "uc3-code",
+    )
+)
 
 # Use Case 4: Sentiment Analysis
-notebook["cells"].append(md_cell("""---
+notebook["cells"].append(
+    md_cell(
+        """---
 ## Use Case 4 — Sentiment Analysis (Social Media Feedback)
 
 **Business scenario**: The brand team wants to understand customer sentiment from social media posts.
 
-The agent uses **RoBERTa** (a state-of-the-art NLP model) to analyze sentiment automatically.""", "uc4-header"))
+The agent uses **RoBERTa** (a state-of-the-art NLP model) to analyze sentiment automatically.""",
+        "uc4-header",
+    )
+)
 
-notebook["cells"].append(code_cell("""# Load social media data
+notebook["cells"].append(
+    code_cell(
+        """# Load social media data
 with open("data/social_media.json") as f:
     social_data = json.load(f)
 
@@ -337,17 +387,27 @@ display_card("Sentiment Insights",
     f"Positive sentiment: {positive_pct:.1f}%. "
     f"Analyzed {len(results)} posts across {len(set(p['platform'] for p in sample_posts))} platforms. "
     "Monitor negative sentiment for brand reputation management.",
-    emoji="📈", color="#8b5cf6")""", "uc4-code"))
+    emoji="📈", color="#8b5cf6")""",
+        "uc4-code",
+    )
+)
 
 # Use Case 5: Text Summarization
-notebook["cells"].append(md_cell("""---
+notebook["cells"].append(
+    md_cell(
+        """---
 ## Use Case 5 — Text Summarization (Support Tickets)
 
 **Business scenario**: Support managers need quick summaries of lengthy support tickets.
 
-The agent uses **BART** (a transformer model) to generate concise summaries.""", "uc5-header"))
+The agent uses **BART** (a transformer model) to generate concise summaries.""",
+        "uc5-header",
+    )
+)
 
-notebook["cells"].append(code_cell("""# Load support tickets
+notebook["cells"].append(
+    code_cell(
+        """# Load support tickets
 with open("data/support_tickets.json") as f:
     support_data = json.load(f)
 
@@ -380,17 +440,27 @@ if "summary" in summary_result:
             "Compression": f"{summary_result['compression_ratio']:.0%}"
         })
 else:
-    display_card("Note", "Text is already concise, no summarization needed", emoji="ℹ️", color="#3b82f6")""", "uc5-code"))
+    display_card("Note", "Text is already concise, no summarization needed", emoji="ℹ️", color="#3b82f6")""",
+        "uc5-code",
+    )
+)
 
 # Use Case 6: Customer 360 View
-notebook["cells"].append(md_cell("""---
+notebook["cells"].append(
+    md_cell(
+        """---
 ## Use Case 6 — Customer 360 View (Unified Data)
 
 **Business scenario**: A relationship manager needs a complete view of a customer before a meeting.
 
-The agent combines data from **CRM, sales, social media, and support** into one unified view.""", "uc6-header"))
+The agent combines data from **CRM, sales, social media, and support** into one unified view.""",
+        "uc6-header",
+    )
+)
 
-notebook["cells"].append(code_cell("""# Get Customer 360 view
+notebook["cells"].append(
+    code_cell(
+        """# Get Customer 360 view
 customer_id = "CUST-001"
 customer_360 = get_customer_360(customer_id)
 
@@ -456,17 +526,27 @@ if "error" not in customer_360:
         f"{'⚠️ Has ' + str(summary['open_issues']) + ' open support issues.' if summary['open_issues'] > 0 else '✅ No open support issues.'}",
         emoji="🎯", color="#667eea")
 else:
-    display_card("Error", f"Customer {customer_id} not found", emoji="❌", color="#ef4444")""", "uc6-code"))
+    display_card("Error", f"Customer {customer_id} not found", emoji="❌", color="#ef4444")""",
+        "uc6-code",
+    )
+)
 
 # Use Case 7: Sales Analytics
-notebook["cells"].append(md_cell("""---
+notebook["cells"].append(
+    md_cell(
+        """---
 ## Use Case 7 — Sales Analytics (Revenue by Product)
 
 **Business scenario**: The sales team wants to understand which products generate the most revenue.
 
-The agent analyzes sales transactions and identifies top-performing products.""", "uc7-header"))
+The agent analyzes sales transactions and identifies top-performing products.""",
+        "uc7-header",
+    )
+)
 
-notebook["cells"].append(code_cell("""# Get sales analytics
+notebook["cells"].append(
+    code_cell(
+        """# Get sales analytics
 sales_analytics = get_sales_analytics()
 
 display(HTML('<div style="font-size:18px;font-weight:600;margin:16px 0">💼 Sales Analytics Dashboard</div>'))
@@ -502,17 +582,27 @@ display_card("Sales Insights",
     f"Top performing product: {top_product.replace('_', ' ').title()} with ${top_revenue:,.2f} in revenue. "
     f"Total of {sales_analytics['total_transactions']} transactions across {len(sales_analytics['by_channel'])} channels. "
     "Focus marketing efforts on top-performing products.",
-    emoji="📈", color="#10b981")""", "uc7-code"))
+    emoji="📈", color="#10b981")""",
+        "uc7-code",
+    )
+)
 
 # Use Case 8: Support Analytics
-notebook["cells"].append(md_cell("""---
+notebook["cells"].append(
+    md_cell(
+        """---
 ## Use Case 8 — Support Analytics (Ticket Analysis)
 
 **Business scenario**: The support manager needs to understand ticket volume, types, and resolution times.
 
-The agent analyzes support tickets to identify bottlenecks and improvement areas.""", "uc8-header"))
+The agent analyzes support tickets to identify bottlenecks and improvement areas.""",
+        "uc8-header",
+    )
+)
 
-notebook["cells"].append(code_cell("""# Get support analytics
+notebook["cells"].append(
+    code_cell(
+        """# Get support analytics
 support_analytics = get_support_analytics()
 
 display(HTML('<div style="font-size:18px;font-weight:600;margin:16px 0">🎫 Support Analytics Dashboard</div>'))
@@ -547,10 +637,15 @@ display_card("Support Insights",
     f"Most common ticket type: {most_common_type[0].replace('_', ' ').title()} ({most_common_type[1]} tickets). "
     f"Average resolution time: {support_analytics['avg_resolution_hours']:.1f} hours. "
     f"{'⚠️ ' + str(support_analytics['open_tickets']) + ' tickets still open.' if support_analytics['open_tickets'] > 0 else '✅ All tickets resolved.'}",
-    emoji="🎯", color="#ef4444")""", "uc8-code"))
+    emoji="🎯", color="#ef4444")""",
+        "uc8-code",
+    )
+)
 
 # Summary
-notebook["cells"].append(md_cell("""---
+notebook["cells"].append(
+    md_cell(
+        """---
 ## Summary
 
 | Use Case | What the agent does | Technology |
@@ -601,7 +696,10 @@ Level 2 is the **analytical** layer. When you need to *act* on insights:
 
 **Charts Saved To**: `data/charts/`
 
-**Audit Log**: `data/audit.jsonl`""", "summary"))
+**Audit Log**: `data/audit.jsonl`""",
+        "summary",
+    )
+)
 
 # Write notebook
 output_path = "notebooks/level2_analytics_agent.ipynb"

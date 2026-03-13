@@ -1,99 +1,82 @@
 # 🔍 Level 1 — Knowledge & Retrieval Agent
 
-**TL;DR**: The knowledge agent answers questions about customers, policies, and history by searching across customer databases, email archives, CRM notes, and policy documents — all in plain English, no SQL required.
+**TL;DR**: The knowledge agent answers questions by retrieving relevant documents from a vector store and synthesizing answers using RAG (Retrieval-Augmented Generation). It understands context, extracts entities, and cites sources.
 
 ---
 
 ## Business Use Cases
 
-### 1. Customer Profile Lookup
-A account manager needs a quick overview of a customer before a call — segment, fraud score, identity verification status, categories purchased.
+### 1. Document Search & Synthesis
+A user asks a question about policies, procedures, or historical information. The agent searches the vector store, retrieves the most relevant documents, and synthesizes a clear answer with citations.
 
-**Trigger**: Any request containing "profile", "customer info", "show me", or "tell me about".
+**Trigger**: Any question requiring document retrieval.
 
-**Output**: Structured customer summary with segment, risk scores, purchase history, and consent flags.
+**Output**: Synthesized answer with cited sources and relevance scores.
 
----
-
-### 2. Identity Verification Status Check
-Trust & Safety needs to verify whether a customer's identity verification is valid before approving a high-value purchase or product application.
-
-**Trigger**: Requests about "identity", "KYC", "verification", or "expiry".
-
-**Output**: Current status (verified/unverified/pending), expiry date, days remaining, or expiry alert.
+**Technology**: Semantic search using vector embeddings (Chroma/Pinecone) + LLM synthesis.
 
 ---
 
-### 3. Email Correspondence Search
-A customer calls claiming they never received a renewal reminder. The agent searches the email archive and surfaces relevant correspondence in seconds.
+### 2. Entity Extraction & Context
+The agent extracts key entities from the user's question (e.g., customer ID, country, product type) to improve search precision and context assembly.
 
-**Trigger**: Requests about "emails", "messages", "correspondence", or "what did we send".
+**Trigger**: Automatic on every query.
 
-**Output**: Ranked list of relevant emails with relevance scores, dates, and previews.
-
-**Technology**: Semantic search using vector embeddings (ChromaDB).
+**Output**: Structured entities used to refine document retrieval.
 
 ---
 
-### 4. CRM Agent Notes Search
-A senior manager wants to understand the history of escalations and complaints before a customer review meeting. Instead of manually reading hundreds of CRM notes, the agent surfaces the most relevant ones.
+### 3. Multi-Query Retrieval
+For complex questions, the agent generates multiple reformulations of the user's query to improve recall. Instead of searching once, it searches multiple ways and combines results.
 
-**Trigger**: Requests about "notes", "history", "escalations", "complaints", or "retention".
+**Trigger**: Automatic on every query.
 
-**Output**: Ranked list of relevant notes with relevance scores, dates, and summaries.
+**Output**: Higher recall by searching from multiple angles.
 
-**Technology**: Semantic search using vector embeddings (ChromaDB).
-
----
-
-### 5. Policy Document Search (RAG)
-A product manager needs to quickly check the eligibility rules for the Premium Membership promotion, or a trust & safety officer needs to verify the identity verification policy — without digging through PDF folders.
-
-**Trigger**: Requests about "policy", "rules", "eligibility", "requirements", or "compliance".
-
-**Output**: Synthesised answer with cited sources (Retrieval-Augmented Generation).
-
-**Technology**: Vector search + LLM synthesis.
+**Technology**: MultiQueryRetriever pattern.
 
 ---
 
-### 6. Cross-Source Search
-A manager asks a broad question that spans multiple data sources — policies, emails, and notes. The agent searches all three collections simultaneously and synthesises a unified answer.
+### 4. Memory Integration
+The agent stores user requests and responses in short-term memory, allowing follow-up questions to reference previous context without re-explaining.
 
-**Trigger**: Complex questions requiring multiple sources.
+**Trigger**: Automatic after each response.
 
-**Output**: Unified answer with source breakdown and relevance scores.
-
----
-
-### 7. Audit Trail
-Trust & Safety requires a full record of every data access — who queried what, when, and what was returned. The audit trail is immutable and written to `data/audit.jsonl`.
-
-**Trigger**: Automatic on every Level 1 action.
-
-**Output**: Immutable log entry with timestamp, user, action, and guardrail status.
+**Output**: Conversation context available for subsequent queries.
 
 ---
 
-### 8. Output Guardrails
-Before any answer reaches a user, it passes through an automatic guardrail check. This protects against:
-- **PII leakage** — email addresses and phone numbers are automatically redacted
-- **Forbidden content** — phrases like "financial advice" or "buy shares" are blocked
+### 5. PII Masking
+Before returning results, the agent masks personally identifiable information (email addresses, phone numbers, names) according to compliance rules.
 
 **Trigger**: Automatic on every response.
 
-**Output**: Sanitised response with violations logged to audit trail.
+**Output**: Sanitized response with PII redacted.
 
 ---
 
-## Data Sources
+## Key Features
 
-| Source | What's stored | Search method |
-|--------|---------------|---------------|
-| **Customer DB** | Profiles, segments, risk scores, consent flags | SQL lookup |
-| **Email Archive** | Sent emails, templates, correspondence | Vector search (ChromaDB) |
-| **CRM Notes** | Agent notes, escalations, retention history | Vector search (ChromaDB) |
-| **Policy Library** | Compliance docs, eligibility rules, procedures | Vector search (ChromaDB) |
+### Semantic Search
+Instead of keyword matching, the agent understands meaning. So "renewal reminder" will match documents about "identity verification expiry notice" even if the exact words differ.
+
+### Multi-Query Retrieval
+For complex questions, the agent generates multiple reformulations to improve recall. This ensures better coverage of relevant documents.
+
+### Retrieval-Augmented Generation (RAG)
+The agent:
+1. Searches the vector store for relevant sections
+2. Passes those sections to the LLM
+3. Returns a synthesised, cited answer — not just a raw document dump
+
+### Entity Extraction
+Automatically extracts key entities (customer ID, country, product type, etc.) from user questions to improve search precision.
+
+### Automatic PII Masking
+Every response is checked for:
+- **Email addresses** — automatically redacted
+- **Phone numbers** — automatically redacted
+- **Names** — automatically masked
 
 ---
 
@@ -103,22 +86,28 @@ Before any answer reaches a user, it passes through an automatic guardrail check
 Your question
      │
      ▼
-Orchestrator classifies intent → routes to Level 1
+Query Understanding: Extract keywords and entities
      │
      ▼
-Level 1 decides: customer lookup? Identity check? email search? policy search?
+Multi-Query Retrieval: Generate multiple reformulations
      │
      ▼
-Retrieves relevant data from the right source
+Semantic Search: Find top documents from vector store
      │
      ▼
-LLM synthesises a clear, cited answer
+Context Assembly: Select and organize retrieved chunks
      │
      ▼
-Guardrail checks output for PII leaks or policy violations
+Answer Generation: LLM synthesizes answer with citations
      │
      ▼
-Answer returned + audit trail logged
+PII Masking: Redact sensitive information
+     │
+     ▼
+Memory Update: Store request and response for context
+     │
+     ▼
+Answer returned
 ```
 
 ---
@@ -128,64 +117,39 @@ Answer returned + audit trail logged
 ```
 Level 1 Agent (src/agents/level1.py)
 │
-├── Customer Lookup
-│   ├── Profile retrieval (SQL)
-│   ├── Identity verification status
-│   └── Consent flags
+├── Query Understanding
+│   ├── Restate user question
+│   ├── Extract keywords
+│   └── Extract entities (customer ID, country, etc.)
 │
-├── Email Search
-│   ├── Vector embedding (ChromaDB)
-│   ├── Semantic similarity ranking
-│   └── Result synthesis
+├── Multi-Query Retrieval
+│   ├── Generate multiple reformulations
+│   └── Improve recall from multiple angles
 │
-├── CRM Notes Search
-│   ├── Vector embedding (ChromaDB)
-│   ├── Semantic similarity ranking
-│   └── Result synthesis
+├── Semantic Search
+│   ├── Vector embedding (Chroma/Pinecone)
+│   ├── Similarity ranking
+│   └── Top-K document selection
 │
-├── Policy Search (RAG)
-│   ├── Vector embedding (ChromaDB)
-│   ├── Retrieval-Augmented Generation
-│   └── Citation tracking
+├── Context Assembly
+│   ├── Select relevant chunks
+│   └── Organize for LLM input
 │
-└── Guardrails
-    ├── PII redaction (email, phone)
-    ├── Forbidden content blocking
-    └── Audit logging
+├── Answer Synthesis
+│   ├── LLM generation with context
+│   ├── Citation tracking
+│   └── Source attribution
+│
+├── PII Masking
+│   ├── Email redaction
+│   ├── Phone number redaction
+│   └── Name masking
+│
+└── Memory Integration
+    ├── Store requests
+    ├── Store responses
+    └── Maintain conversation context
 ```
-
----
-
-## Key Features
-
-### Semantic Search
-Instead of keyword matching, the agent understands meaning. So "renewal reminder" will match emails about "identity verification expiry notice" even if the exact words differ.
-
-### Multi-Collection Search
-One question can search across customer data, emails, notes, and policies simultaneously, returning a unified answer.
-
-### Retrieval-Augmented Generation (RAG)
-For policy questions, the agent:
-1. Searches the policy library for relevant sections
-2. Passes those sections to the LLM
-3. Returns a synthesised, cited answer — not just a raw document dump
-
-### Automatic Guardrails
-Every response is checked for:
-- **PII leakage** — email addresses, phone numbers, names
-- **Forbidden content** — financial advice, investment recommendations
-- **Policy violations** — compliance breaches
-
-Violations are logged but don't block the response (configurable).
-
-### Immutable Audit Trail
-Every action is logged to `data/audit.jsonl`:
-- Timestamp
-- User ID
-- Action (customer lookup, email search, etc.)
-- Customer ID (if applicable)
-- Guardrail status
-- Violations (if any)
 
 ---
 
@@ -194,28 +158,33 @@ Every action is logged to `data/audit.jsonl`:
 ### Environment Variables
 
 ```bash
-# Guardrails
-GUARDRAIL_ENABLED=true              # Enable PII redaction
-GUARDRAIL_BLOCK_ON_VIOLATION=false  # Block response or just log
+# Vector Store
+VECTOR_STORE=chroma              # or pinecone
+CHROMA_COLLECTION=documents
 
-# Vector Search
-CHROMA_COLLECTION_EMAILS=emails
-CHROMA_COLLECTION_NOTES=notes
-CHROMA_COLLECTION_POLICIES=policies
+# LLM
+LLM_PROVIDER=openai
+OPENAI_API_KEY=your_key_here
 
-# Audit Trail
-AUDIT_LOG_PATH=data/audit.jsonl
-AUDIT_RETENTION_DAYS=2555           # 7 years
+# Retrieval
+MAX_DOCUMENTS_PER_QUERY=5        # Avoid latency
+RETRIEVAL_TIMEOUT=30             # seconds
+
+# PII Masking
+PII_MASKING_ENABLED=true
+MASK_EMAILS=true
+MASK_PHONE_NUMBERS=true
+MASK_NAMES=true
 ```
 
 ### Adding New Documents
 
-1. Place documents in `data/docs/` (emails, notes, policies)
+1. Place documents in `data/docs/` (markdown, PDF, text)
 2. Run the ingestion script:
    ```bash
    python scripts/ingest_folder.py data/docs/
    ```
-3. Documents are immediately searchable
+3. Documents are immediately searchable via semantic search
 
 ---
 
@@ -223,157 +192,105 @@ AUDIT_RETENTION_DAYS=2555           # 7 years
 
 | Operation | Time | Notes |
 |-----------|------|-------|
-| Customer profile lookup | <100ms | SQL query |
-| Email search (100 emails) | ~500ms | Vector search + ranking |
-| CRM notes search (500 notes) | ~1s | Vector search + ranking |
-| Policy search (50 policies) | ~500ms | Vector search + RAG |
-| Cross-source search | ~2s | All sources in parallel |
+| Query understanding | ~100ms | Entity extraction |
+| Multi-query generation | ~200ms | Generate reformulations |
+| Semantic search (1000 docs) | ~500ms | Vector similarity |
+| Context assembly | ~100ms | Select top chunks |
+| Answer synthesis | ~2-3s | LLM generation |
+| PII masking | ~50ms | Regex patterns |
+| **Total** | **~3-4s** | End-to-end |
+
+---
+
+## Constraints
+
+- Do not fetch more than 5 documents per query to avoid latency
+- Mask personally identifiable information (PII) according to compliance rules
+- Use MultiQueryRetriever to improve recall on complex questions
+- Integrate AI capabilities (sentiment analysis, clustering) only as retrieval helpers if needed
 
 ---
 
 ## Troubleshooting
 
-### "Customer not found"
-**Cause**: Customer ID doesn't exist in database.
+### "No documents found"
+**Cause**: Documents not ingested or search term too specific.
 
-**Solution**: Verify customer ID format (e.g., CUST-001).
+**Solution**: Run `python scripts/ingest_folder.py data/docs/` to ingest documents.
 
-### "No emails found"
-**Cause**: Email archive not ingested or search term too specific.
+### "PII masking too aggressive"
+**Cause**: Masking legitimate content.
 
-**Solution**: Run `python scripts/ingest_folder.py data/docs/emails/` to ingest emails.
+**Solution**: Adjust patterns in `src/core/guardrails.py` or set `PII_MASKING_ENABLED=false` for testing.
 
-### "PII redaction too aggressive"
-**Cause**: Guardrail blocking legitimate content.
+### "Slow response times"
+**Cause**: Too many documents being retrieved or LLM latency.
 
-**Solution**: Set `GUARDRAIL_BLOCK_ON_VIOLATION=false` to log only, or adjust patterns in `src/core/guardrails.py`.
+**Solution**: Reduce `MAX_DOCUMENTS_PER_QUERY` or use a faster LLM model.
 
-### "Audit trail not writing"
-**Cause**: File permissions or path issue.
+### "Poor answer quality"
+**Cause**: Irrelevant documents retrieved or insufficient context.
 
-**Solution**: Ensure `data/` directory exists and is writable: `mkdir -p data && chmod 755 data`.
+**Solution**: Improve document quality, add more relevant documents, or adjust retrieval parameters.
 
 ---
 
 ## API Reference
 
-### Customer Lookup
+### Document Search
 
 ```python
-from src.tools.customer import get_customer_profile
+from nonagentic.tools.knowledge import search_documents
 
-profile = get_customer_profile("CUST-001")
-# Returns: {id, name, segment, fraud_score, identity_status, categories, consent}
+results = search_documents("What is the fraud policy?", top_k=5)
+# Returns: [{source, relevance, content}, ...]
 ```
 
-### Email Search
+### Multi-Query Search
 
 ```python
-from src.tools.knowledge import search_emails
+from nonagentic.tools.knowledge import multi_query_search
 
-results = search_emails("renewal reminder", top_k=5)
-# Returns: [{source, relevance, date, preview}, ...]
+results = multi_query_search("How do we handle disputes?", top_k=5)
+# Returns: [{source, relevance, content}, ...]
 ```
 
-### CRM Notes Search
+### Answer Synthesis (RAG)
 
 ```python
-from src.tools.knowledge import search_notes
+from nonagentic.tools.knowledge import synthesize_answer
 
-results = search_notes("escalation", top_k=5)
-# Returns: [{source, relevance, date, preview}, ...]
-```
-
-### Policy Search (RAG)
-
-```python
-from src.tools.knowledge import search_policies
-
-answer = search_policies("What is the identity verification renewal policy?")
+answer = synthesize_answer("What is the identity verification policy?")
 # Returns: {answer, sources, citations}
 ```
 
-### Audit Trail
+### Entity Extraction
 
 ```python
-from src.core.observability import log_audit
+from nonagentic.tools.knowledge import extract_entities
 
-log_audit(
-    agent_id="level1_knowledge",
-    action="customer_lookup",
-    customer_id="CUST-001",
-    user_id="manager@shop.com",
-    guardrail_passed=True,
-    violations=[]
-)
+entities = extract_entities("Show me fraud policies for high-value transactions in Europe")
+# Returns: {keywords: [...], entities: {country: "Europe", transaction_type: "high-value"}}
 ```
 
 ---
 
-## Testing
+## Key Differences from Nonagent Pipeline
 
-### Unit Tests
-
-```bash
-pytest tests/test_tools.py::test_customer_lookup -v
-pytest tests/test_tools.py::test_email_search -v
-pytest tests/test_tools.py::test_policy_search -v
-```
-
-### Integration Tests
-
-```bash
-python -m pytest tests/test_graph.py -v
-```
-
-### Notebook Tests
-
-Run all cells in `notebooks/level1_knowledge_agent.ipynb`
+| Aspect | Level 1 | Other Levels |
+|--------|---------|-------------|
+| **Purpose** | Read-only retrieval | Action-oriented |
+| **Data Access** | Vector store search | SQL queries, APIs |
+| **Output** | Synthesized answers | Structured data, actions |
+| **Latency** | 3-4 seconds | Variable |
+| **Autonomy** | None (retrieval only) | High (can execute actions) |
 
 ---
 
-## Deployment
+## Next Steps
 
-### Production Checklist
+Level 1 is the **read-only** retrieval layer. When you need to *act* on what you find:
 
-- [ ] Ingest all documents: `python scripts/ingest_folder.py data/docs/`
-- [ ] Configure guardrails: `GUARDRAIL_ENABLED=true`
-- [ ] Set audit trail path: `AUDIT_LOG_PATH=data/audit.jsonl`
-- [ ] Test customer lookup with production data
-- [ ] Test email/notes search with sample queries
-- [ ] Verify PII redaction works
-- [ ] Set up audit log rotation (7-year retention)
-- [ ] Monitor Langfuse traces (if enabled)
-
-### Scaling Considerations
-
-- Cache frequently accessed customer profiles
-- Use read replicas for customer database queries
-- Batch vector search requests
-- Implement rate limiting per user
-- Monitor ChromaDB memory usage
-
----
-
-## Resources
-
-- `notebooks/level1_knowledge_agent.ipynb` - Interactive demo
-- `tests/test_tools.py` - Feature tests
-- `specs/01-level1-knowledge/` - Detailed specifications
-- `data/audit.jsonl` - Audit trail log
-
----
-
-## Support
-
-For issues or questions:
-1. Check troubleshooting section above
-2. Review test output: `pytest tests/test_tools.py -v`
-3. Check logs in `data/audit.jsonl`
-4. Review Langfuse traces (if enabled)
-
----
-
-**Last Updated**: 2026-03-12  
-**Version**: 1.0  
-**Status**: Production Ready
+- **Level 2** — run SQL analytics, segment customers, generate charts
+- **Level 3** — send notifications, create cases, recommend offers
+- **Level 4** — run full campaigns, track KPIs, self-correct strategy

@@ -6,22 +6,26 @@ Usage:
 """
 import json
 from dotenv import load_dotenv
+
 load_dotenv()
 
-from src.graph import graph
-from src.core.state import new_state
+from nonagentic.graph import graph
+from nonagentic.core.state import new_state
 
 REQUESTS = [
     ("informational", "What is the KYC status of customer CUST-001?"),
-    ("analytical",    "Show me a segment breakdown of high-risk customers"),
-    ("action",        "Send a retention offer to customer CUST-042"),
-    ("strategic",     "Increase product adoption among low-engagement customers this quarter"),
+    ("analytical", "Show me a segment breakdown of high-risk customers"),
+    ("action", "Send a retention offer to customer CUST-042"),
+    (
+        "strategic",
+        "Increase product adoption among low-engagement customers this quarter",
+    ),
 ]
 
 for intent, request in REQUESTS:
     print(f"\n{'='*60}")
     print(f"[{intent.upper()}] {request}")
-    print("="*60)
+    print("=" * 60)
 
     state = new_state(request, user_id="analyst@bank.com")
     result = graph.invoke(

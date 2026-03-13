@@ -1,24 +1,24 @@
 import pytest
-from src.core.observability import (
+from nonagentic.core.observability import (
     node_trace,
     record_tokens,
     get_event_log,
     clear_event_log,
     _token_accumulator,
 )
-from src.orchestration.registry import get_agent, list_agents, describe_all
+from nonagentic.orchestration.registry import get_agent, list_agents, describe_all
 
 
 def test_observability_node_trace_success():
     clear_event_log()
-    
+
     @node_trace("test_node")
     def dummy_node(state):
         return {"result": "ok", "tool_calls": []}
-    
+
     result = dummy_node({"request_id": "req-123"})
     assert result["result"] == "ok"
-    
+
     events = get_event_log()
     assert len(events) == 2
     assert events[0]["event"] == "node_start"
@@ -28,14 +28,14 @@ def test_observability_node_trace_success():
 
 def test_observability_node_trace_with_error():
     clear_event_log()
-    
+
     @node_trace("error_node")
     def failing_node(state):
         raise ValueError("test error")
-    
+
     result = failing_node({"request_id": "req-456"})
     assert "error" in result
-    
+
     events = get_event_log()
     end_event = [e for e in events if e["event"] == "node_end"][0]
     assert end_event["error"] == "test error"

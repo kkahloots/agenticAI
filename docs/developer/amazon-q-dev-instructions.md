@@ -78,7 +78,7 @@ Use LangGraph StateGraph. Each agent is a node function: (state: AgentState) -> 
 
 Requirements:
 - Classify intent into: informational | analytical | action | strategic
-- Use get_llm() from src/llm.py — NOT ChatOpenAI directly
+- Use get_llm() from agnetic/llm.py — NOT ChatOpenAI directly
 - Return routing decision + confidence score (0–1)
 - If confidence < 0.6, route to human_approval node
 - Fall back to rule-based classification if LLM is unavailable

@@ -1,4 +1,5 @@
 """Generate notebooks/level3_functional_agent.ipynb"""
+
 from __future__ import annotations
 
 import json
@@ -34,9 +35,9 @@ from IPython.display import display, HTML
 import json, pandas as pd
 from pathlib import Path
 
-from src.tools.leads import score_leads, enrich_customer, bulk_recommend
-from src.tools.functional import recommend_offer, draft_email, send_notification, create_case
-from src.tools.customer import search_customer_profile, get_kyc_status
+from nonagentic.tools.leads import score_leads, enrich_customer, bulk_recommend
+from nonagentic.tools.functional import recommend_offer, draft_email, send_notification, create_case
+from nonagentic.tools.customer import search_customer_profile, get_kyc_status
 
 print("✅ Level 3 Functional Agent — ready")
 """
@@ -270,7 +271,7 @@ UC9 = """\
 # UC9: Guardrails — PII Redaction & Policy Enforcement
 
 import os
-from src.core.guardrails import guardrail_check
+from nonagentic.core.guardrails import guardrail_check
 
 # Enable guardrails
 os.environ["GUARDRAIL_ENABLED"] = "true"
@@ -309,18 +310,20 @@ display_status_banner("✅ Guardrails disabled for remaining demos", status="suc
 """
 
 CELLS = [
-    cell("# Level 3 — Functional Agent / Lead Generation & Targeted Marketing\n\n"
-         "This notebook demonstrates the Level 3 Functional Agent capabilities:\n\n"
-         "- **UC1**: Lead Scoring — identify top prospects for a product offer\n"
-         "- **UC2**: Customer Enrichment — multi-source data (credit bureau, business registry, location)\n"
-         "- **UC3**: Next-Best-Action (NBA) Recommendation — ranked offer scoring\n"
-         "- **UC4**: Consent-Gated Notification — send offer email with consent check\n"
-         "- **UC5**: Identity Gate — block action on unverified identity, open remediation case\n"
-         "- **UC6**: Bulk Campaign Targeting — segment-level execution plan\n"
-         "- **UC7**: Return Risk Intervention — identify and contact high-return-risk customers\n"
-         "- **UC8**: Campaign Results Dashboard — analyse past campaign performance\n"
-         "- **UC9**: Guardrails — PII redaction and policy enforcement",
-         "markdown"),
+    cell(
+        "# Level 3 — Functional Agent / Lead Generation & Targeted Marketing\n\n"
+        "This notebook demonstrates the Level 3 Functional Agent capabilities:\n\n"
+        "- **UC1**: Lead Scoring — identify top prospects for a product offer\n"
+        "- **UC2**: Customer Enrichment — multi-source data (credit bureau, business registry, location)\n"
+        "- **UC3**: Next-Best-Action (NBA) Recommendation — ranked offer scoring\n"
+        "- **UC4**: Consent-Gated Notification — send offer email with consent check\n"
+        "- **UC5**: Identity Gate — block action on unverified identity, open remediation case\n"
+        "- **UC6**: Bulk Campaign Targeting — segment-level execution plan\n"
+        "- **UC7**: Return Risk Intervention — identify and contact high-return-risk customers\n"
+        "- **UC8**: Campaign Results Dashboard — analyse past campaign performance\n"
+        "- **UC9**: Guardrails — PII redaction and policy enforcement",
+        "markdown",
+    ),
     cell(SETUP),
     cell("## UC1: Lead Scoring — Identify Top Prospects", "markdown"),
     cell(UC1),
@@ -346,7 +349,11 @@ nb = {
     "nbformat": 4,
     "nbformat_minor": 5,
     "metadata": {
-        "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
+        "kernelspec": {
+            "display_name": "Python 3",
+            "language": "python",
+            "name": "python3",
+        },
         "language_info": {"name": "python", "version": "3.10.0"},
     },
     "cells": CELLS,

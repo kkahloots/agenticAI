@@ -1,6 +1,10 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from src.tools.knowledge import search_policy_docs, multi_query_search, _expand_queries
+from nonagentic.tools.knowledge import (
+    search_policy_docs,
+    multi_query_search,
+    _expand_queries,
+)
 
 
 def test_search_policy_docs_no_collection():
@@ -14,7 +18,12 @@ def test_search_policy_docs_success():
     mock_collection = MagicMock()
     mock_collection.query.return_value = {
         "documents": [["doc1", "doc2"]],
-        "metadatas": [[{"source": "s1", "doc_type": "policy"}, {"source": "s2", "doc_type": "policy"}]],
+        "metadatas": [
+            [
+                {"source": "s1", "doc_type": "policy"},
+                {"source": "s2", "doc_type": "policy"},
+            ]
+        ],
         "distances": [[0.1, 0.2]],
     }
     with patch("src.tools.knowledge._get_collection", return_value=mock_collection):
